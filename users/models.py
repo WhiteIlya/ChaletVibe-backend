@@ -37,6 +37,7 @@ class UserManager(BaseUserManager):
     
 
 class User(AbstractUser):
+    username = None
     first_name = models.CharField(
         max_length=50,
         blank=True,
@@ -58,6 +59,8 @@ class User(AbstractUser):
     EMAIL_FIELD: str = "email"
     REQUIRED_FIELDS = []
 
+    objects: UserManager = UserManager()
+
     class Meta:
         db_table = "user"
         verbose_name = "User"
@@ -72,3 +75,11 @@ class User(AbstractUser):
         return self.get_full_name()
     
     # it is also possible to configure has_perm has_module_perms or any other @property
+
+    @property
+    def is_staff(self):
+        return self.is_admin
+
+    @property
+    def is_superuser(self):
+        return self.is_admin
