@@ -19,7 +19,7 @@ class UserManager(BaseUserManager):
 
         user = self.model(email=email)
         if password:
-            user.set_password(password)
+            user.set_password(password)  # Here the password automatically hashes before it loads to the db
         user.save(using=self._db)
         return user
     
@@ -37,7 +37,7 @@ class UserManager(BaseUserManager):
     
 
 class User(AbstractUser):
-    username = None
+    username = None  # Get rid of the useless property
     first_name = models.CharField(
         max_length=50,
         blank=True,
@@ -51,7 +51,7 @@ class User(AbstractUser):
     email = models.EmailField(
         verbose_name="email address",
         max_length=255,
-        unique=True,  # The field must be unique
+        unique=True,  # Validation of the email on db level
     )
     is_admin = models.BooleanField(default=False)
 
@@ -76,6 +76,7 @@ class User(AbstractUser):
     
     # it is also possible to configure has_perm has_module_perms or any other @property
 
+    # Map unused properties to is_admin
     @property
     def is_staff(self):
         return self.is_admin
