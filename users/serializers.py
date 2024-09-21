@@ -14,8 +14,10 @@ class UserSerializer(serializers.ModelSerializer):  # To serialize user info
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(  # Additional email validation even though validation on the db level is already set in the model
         required=True,
-        validators=[UniqueValidator(queryset=User.object.all(), message="This email has already been registered")]
+        validators=[UniqueValidator(queryset=User.objects.all(), message="This email has already been registered")]
     )
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])  # embedded validator for passwords
     password2 = serializers.CharField(write_only=True, required=True)
 
@@ -31,9 +33,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('password2')
         user = User.objects.create_user(
-            email = validated_data['email'],
             first_name = validated_data['first_name'],
             last_name = validated_data['last_name'],
+            email = validated_data['email'],
             password = validated_data['password']
         )
         return user

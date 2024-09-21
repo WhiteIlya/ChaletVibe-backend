@@ -17,21 +17,38 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
+    def destroy(self, request, *args, **kwargs):
+        """
+        Limit this action only for admins
+        """
+        if not request.user.is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN, data={'detail': 'Dont delete you bro'})
+        return super().destroy(request, *args, **kwargs)
+    
+    def update(self, request, *args, **kwargs):
+        """
+        Only for request.user == user or is_admin
+        """
+        user = self.get_object()
+        if request.user.is_admin or request.user == user:
+            return super().update(request, *args, **kwargs)
+        return Response(status=status.HTTP_403_FORBIDDEN, data={'detail': 'You are allowed to update only your profile'})
+
     def list(self, request):  # Make the predefined method in ModelViewSet custom
         """
         List users for is_admin = True only
         """
-        self.permission_classes = [IsAdminUser]
-        self.check_permissions(request)  # Check if the current user is admin
+        if not request.user.is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN, data={'detail': 'You are not allowed to see a list of users'})
         return super().list(request)
     
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, *args, **kwargs):
         """
-        Permit get any user information only for is_admin = True
+        Permit get any user information only for is_admin = True or request.user == user
         """
         user = self.get_object()
         if request.user.is_admin or request.user == user:
-            super().retrieve(request, pk)
+            return super().retrieve(request, *args, **kwargs)
         return Response(status=status.HTTP_403_FORBIDDEN, data={'detail': 'Access is prohibited'})
 
     @action(
@@ -46,7 +63,7 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         serializer = RegisterSerializer(data = request.data)
         if serializer.is_valid():
-            user = serializer.save()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -57,13 +74,13 @@ class UserViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated]
     )
     def me(self, request):
-        serializer = serializer.get_serializer(request.user)
+        serializer = self.get_serializer(request.user)
         return Response(serializer.data)
     
     def get_permissions(self):
         if self.action in ['register']:
             self.permission_classes = [AllowAny]
-        elif self.action in ['list', 'retrieve']:
+        elif self.action in ['destroy', 'list']:
             self.permission_classes = [IsAdminUser]
         else:
             self.permission_classes = [IsAuthenticated]

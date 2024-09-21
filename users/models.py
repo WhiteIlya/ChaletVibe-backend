@@ -8,16 +8,16 @@ from utils.validators import validate_latin_characters
 class UserManager(BaseUserManager):
     """Custom manager for user DB"""
 
-    def create_user(self, email: str, password: Optional[str] = None) -> "User":
+    def create_user(self, email: str, first_name: Optional[str] = '', last_name: Optional[str] = '', password: Optional[str] = None) -> "User":
         """
-        Creates and saves a User with the given email and password.
+        Creates and saves a User with the given email, first_name, last_name and password.
         """
 
         if not email:
             raise ValueError("The Email must be set")
         email = self.normalize_email(email)
 
-        user = self.model(email=email)
+        user = self.model(email=email, first_name=first_name, last_name=last_name)
         if password:
             user.set_password(password)  # Here the password automatically hashes before it loads to the db
         user.save(using=self._db)
