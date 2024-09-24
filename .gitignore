@@ -1,3 +1,7 @@
 venv/
 .env
 .DS_Store
+
+# Python-specific
+*.py[cod]
+__pycache__/
