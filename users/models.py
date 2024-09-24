@@ -54,6 +54,7 @@ class User(AbstractUser):
         unique=True,  # Validation of the email on db level
     )
     is_admin = models.BooleanField(default=False)
+    voted = models.BooleanField(default=False)
 
     USERNAME_FIELD: str = "email"  # is used as the unique identifier
     EMAIL_FIELD: str = "email"

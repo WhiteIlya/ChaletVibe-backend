@@ -137,3 +137,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # To make Django use custom model of the user rather than embedded one
 AUTH_USER_MODEL = "users.User"
+
+# The path to media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
