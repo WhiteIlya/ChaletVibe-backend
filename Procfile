@@ -1,1 +1,2 @@
-web: gunicorn chalet-vibe.wsgi --log-file -
+release: python manage.py migrate
+web: gunicorn chalet_vibe.wsgi --log-file -
