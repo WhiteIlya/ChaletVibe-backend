@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -90,7 +91,10 @@ class UserViewSet(viewsets.ModelViewSet):
     
     def get_permissions(self):
         if self.action in ['register']:
-            self.permission_classes = [AllowAny]
+            if settings.DEBUG:
+                self.permission_classes = [AllowAny]
+            else:
+                self.permission_classes = [IsAuthenticated]
         elif self.action in ['destroy', 'list']:
             self.permission_classes = [IsAdminUser]
         else:
