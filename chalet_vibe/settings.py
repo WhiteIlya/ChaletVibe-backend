@@ -16,7 +16,7 @@ ALLOWED_HOSTS = ['chalet-vibe-backend.onrender.com', 'localhost']
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    'chalet-vibe.onrender.com'
+    'https://chalet-vibe.onrender.com'
 ]
 
 
