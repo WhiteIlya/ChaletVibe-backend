@@ -77,6 +77,17 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
     
+    @action(
+        detail=False,
+        methods=['post'],
+        url_path='set-voted'
+    )
+    def set_voted(self, request):
+        user = request.user
+        user.voted = True
+        user.save()
+        return Response({"detail": "User voted status updated."}, status=status.HTTP_200_OK)
+    
     def get_permissions(self):
         if self.action in ['register']:
             self.permission_classes = [AllowAny]
