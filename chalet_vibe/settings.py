@@ -12,7 +12,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "!!!SET SECRET KEY!!!")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['chalet-vibe.onrender.com', 'localhost']
+ALLOWED_HOSTS = ['chalet-vibe-backend.onrender.com', 'localhost']
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
