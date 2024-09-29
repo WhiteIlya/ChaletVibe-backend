@@ -1,0 +1,1 @@
+web: gunicorn chalet-vibe.wsgi --log-file -

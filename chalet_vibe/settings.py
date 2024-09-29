@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
+import dj_database_url
 
 load_dotenv()
 
@@ -11,10 +12,11 @@ SECRET_KEY = os.getenv("SECRET_KEY", "!!!SET SECRET KEY!!!")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['chalet-vibe.onrender.com', 'localhost']
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'chalet-vibe.onrender.com'
 ]
 
 
@@ -35,6 +37,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -89,15 +92,20 @@ WSGI_APPLICATION = 'chalet_vibe.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
+    )
 }
+
+# 'default': {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': os.getenv('DB_NAME'),
+#     'USER': os.getenv('DB_USER'),
+#     'PASSWORD': os.getenv('DB_PASSWORD'),
+#     'HOST': os.getenv('DB_HOST'),
+#     'PORT': os.getenv('DB_PORT'),
+# }
+
 
 
 # Password validation
@@ -134,7 +142,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
